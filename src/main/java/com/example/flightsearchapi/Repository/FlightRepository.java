@@ -11,10 +11,16 @@ import java.util.List;
 
 public interface FlightRepository extends JpaRepository<Flight, Long> {
 
-    @Query("SELECT f FROM Flight f WHERE f.departureAirport = :departureAirport AND f.arrivalAirport = :arrivalAirport AND f.departureDateTime = :departureDateTime")
-    List<Flight> findOneWay(@Param("departureAirport") Airport departureAirport,
-                                  @Param("arrivalAirport") Airport arrivalAirport,
-                                  @Param("departureDateTime") LocalDateTime departureDateTime
-                                  );
 
+    @Query("SELECT f FROM Flight f WHERE f.departureAirport = :departureAirport " +
+            "AND f.arrivalAirport = :arrivalAirport " +
+            "AND f.departureDateTime BETWEEN :startOfDay AND :endOfDay")
+    List<Flight> findFlight(@Param("departureAirport") Airport departureAirport,
+                            @Param("arrivalAirport") Airport arrivalAirport,
+                            @Param("startOfDay") LocalDateTime startOfDay,
+                            @Param("endOfDay") LocalDateTime endOfDay
+    );
+
+    List<Flight> findByDepartureAirport(Airport departureAirport);
+    List<Flight> findByArrivalAirport(Airport arrivalAirport);
 }

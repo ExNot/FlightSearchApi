@@ -1,12 +1,13 @@
 package com.example.flightsearchapi.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.flightsearchapi.Repository.FlightRepository;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+
+import java.util.List;
 
 @Entity
 public class Airport {
@@ -14,7 +15,6 @@ public class Airport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank
-
     @Size(min= 1, max = 45)
     private String city;
 
@@ -26,6 +26,7 @@ public class Airport {
         this.id = id;
         this.city = city;
     }
+
 
     public Long getId() {
         return id;

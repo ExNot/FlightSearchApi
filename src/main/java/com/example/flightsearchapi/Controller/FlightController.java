@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -77,27 +79,40 @@ public class FlightController {
         }
     }
 
-    //SEARCH (GET): Searching flights
+    //SEARCH FOR FLIGHTS
     @GetMapping("/search")
     public ResponseEntity<List<Flight>> searchFlights(
             @RequestParam Airport departureAirport,
             @RequestParam Airport arrivalAirport,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime departureDateTime,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime returnDateTime
-            ) {
-        System.out.println("hello");
-        if (returnDateTime == null){
-            //One way
-            List<Flight> oneWayFlights = flightRepository.findOneWay(departureAirport,arrivalAirport,departureDateTime);
-            return new ResponseEntity<>(oneWayFlights, HttpStatus.OK);
-        }else {
-            //Round trip
-            List<Flight> departureFlight = flightRepository.findOneWay(departureAirport, arrivalAirport, departureDateTime);
-            List<Flight> arrivalFlight = flightRepository.findOneWay(arrivalAirport, departureAirport, returnDateTime);
-            List<Flight> roundTripFlights = Stream.concat(departureFlight.stream(), arrivalFlight.stream())
-                    .collect(Collectors.toList());
-            return new ResponseEntity<>(roundTripFlights, HttpStatus.OK);
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDate departureDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDate returnDate
+    ) {
+
+        try {
+            LocalDateTime startOfDay = departureDate.atStartOfDay();
+            LocalDateTime endOfDay = startOfDay.plusDays(1).minusSeconds(1);
+
+
+            if (returnDate == null){
+                //One way
+                List<Flight> depratureFlight = flightRepository.findFlight(departureAirport, arrivalAirport, startOfDay, endOfDay);
+                return new ResponseEntity<>(depratureFlight, HttpStatus.OK);
+            }else {
+                //Round trip
+                List<Flight> departureFlight = flightRepository.findFlight(departureAirport, arrivalAirport, startOfDay, endOfDay);
+
+                LocalDateTime returnStartOfDay = returnDate.atStartOfDay();
+                LocalDateTime returnEndOfDay = returnStartOfDay.plusDays(1).minusSeconds(1);
+                List<Flight> arrivalFlight = flightRepository.findFlight(arrivalAirport, departureAirport, returnStartOfDay, returnEndOfDay);
+                List<Flight> roundTripFlights = Stream.concat(departureFlight.stream(), arrivalFlight.stream())
+                        .collect(Collectors.toList());
+                return new ResponseEntity<>(roundTripFlights, HttpStatus.OK);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
     }
 
 
