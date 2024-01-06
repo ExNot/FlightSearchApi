@@ -82,9 +82,10 @@ public class FlightController {
     public ResponseEntity<List<Flight>> searchFlights(
             @RequestParam Airport departureAirport,
             @RequestParam Airport arrivalAirport,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDateTime departureDateTime,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDateTime returnDateTime
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime departureDateTime,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime returnDateTime
             ) {
+        System.out.println("hello");
         if (returnDateTime == null){
             //One way
             List<Flight> oneWayFlights = flightRepository.findOneWay(departureAirport,arrivalAirport,departureDateTime);

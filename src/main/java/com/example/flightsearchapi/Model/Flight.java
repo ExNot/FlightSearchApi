@@ -1,6 +1,7 @@
 package com.example.flightsearchapi.Model;
 
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +18,7 @@ public class Flight {
     @JoinColumn(name = "arrival_airport_id", nullable = false)
     private Airport arrivalAirport;
     private LocalDateTime departureDateTime;
+
     private LocalDateTime returnDateTime;
     private double price;
 

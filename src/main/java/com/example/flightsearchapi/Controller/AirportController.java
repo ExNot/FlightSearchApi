@@ -25,6 +25,8 @@ public class AirportController {
         Airport savedAirport = airportRepository.save(airport);
         return new ResponseEntity<>(savedAirport, HttpStatus.CREATED);
     }
+
+
     // Fetch an airport with Id (READ)
     @GetMapping("/{id}")
     public ResponseEntity<Airport> getAirportById(@PathVariable Long id){
