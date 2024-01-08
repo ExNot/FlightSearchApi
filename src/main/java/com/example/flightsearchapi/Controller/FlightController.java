@@ -3,6 +3,7 @@ package com.example.flightsearchapi.Controller;
 import com.example.flightsearchapi.Model.Airport;
 import com.example.flightsearchapi.Model.Flight;
 import com.example.flightsearchapi.Repository.FlightRepository;
+import com.example.flightsearchapi.ScheduledJob.FlightDataUpdater;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -95,8 +95,8 @@ public class FlightController {
 
             if (returnDate == null){
                 //One way
-                List<Flight> depratureFlight = flightRepository.findFlight(departureAirport, arrivalAirport, startOfDay, endOfDay);
-                return new ResponseEntity<>(depratureFlight, HttpStatus.OK);
+                List<Flight> oneWayFlight = flightRepository.findFlight(departureAirport, arrivalAirport, startOfDay, endOfDay);
+                return new ResponseEntity<>(oneWayFlight, HttpStatus.OK);
             }else {
                 //Round trip
                 List<Flight> departureFlight = flightRepository.findFlight(departureAirport, arrivalAirport, startOfDay, endOfDay);
